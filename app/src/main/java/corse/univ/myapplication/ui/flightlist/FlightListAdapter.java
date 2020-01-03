@@ -1,6 +1,7 @@
 package corse.univ.myapplication.ui.flightlist;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import corse.univ.myapplication.R;
 
 public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.FlightViewHolder>
 {
@@ -23,15 +25,20 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
     @Override
     public FlightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
-        TextView callSignTextView = new TextView(parent.getContext());
-        return new FlightViewHolder(callSignTextView);
+
+        //TextView callSignTextView = new TextView(parent.getContext());
+        //TextView test = new TextView(parent.getContext());
+        //return new FlightViewHolder(callSignTextView);
+        return new FlightViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.flight_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull FlightViewHolder holder, int position)
     {
         Log.i(TAG, mFlightsList.get(position).getCallsign());
-        holder.callSignView.setText(mFlightsList.get(position).getCallsign());
+        holder.onBind(position);
+        //holder.callSignView.setText(mFlightsList.get(position).getCallsign());
+
     }
 
     @Override
@@ -53,10 +60,25 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
 
         TextView callSignView;
 
-        public FlightViewHolder(@NonNull View itemView)
+        public FlightViewHolder(@NonNull final View itemView)
         {
             super(itemView);
-            callSignView = (TextView) itemView;
+            callSignView = itemView.findViewById(R.id.callSign);
+
+
+        }
+
+        public void onBind(int position) {
+
+            final Flight mFlight = mFlightsList.get(position);
+
+            callSignView.setText(mFlight.getCallsign());
+            callSignView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callSignView.setText("blob");
+                }
+            });
         }
     }
 }
