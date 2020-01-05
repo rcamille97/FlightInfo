@@ -1,13 +1,7 @@
 package managers;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.example.flightstats.Airport;
 import com.example.flightstats.Utils;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class AirportManager {
@@ -31,6 +25,17 @@ public class AirportManager {
 
     public List<Airport> getAirportList() {
         return mAirportList;
+    }
+
+    public Airport getAirportWithCode(String value){
+        for (Airport a: mAirportList
+             ) {
+            if(a.getIcao().equals(value)){
+
+                return a;
+            }
+        }
+        return null;
     }
 
     public Airport getAirportByIndex(int index){

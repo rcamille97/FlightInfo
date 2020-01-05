@@ -2,7 +2,6 @@ package corse.univ.myapplication.ui.home;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,23 +11,19 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.flightstats.Airport;
-import com.example.flightstats.Utils;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import corse.univ.myapplication.GlobalActivity;
+import corse.univ.myapplication.Activities.GlobalActivity;
 import corse.univ.myapplication.R;
 import managers.AirportManager;
 
@@ -167,17 +162,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void doSearch(){
-        /*boolean isDeparture = false;
-        int position = airportSpinner.getSelectedItemPosition();
-        boolean switchChecked = switchToFrom.isChecked();
-        if(switchChecked){
-            isDeparture = false;
-            Airport myAirport = airportManager.getAirportByIndex(position);;
-            Log.v("AAA", myAirport.getCity());
-        }else{
-            isDeparture = true;
-            Log.v("AAA", "Unchecked");
-        }*/
 
         // Récupérer le code aéroport
         int selectedIndex = airportSpinner.getSelectedItemPosition();

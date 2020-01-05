@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import corse.univ.myapplication.Activities.MapFlightActivity;
 import corse.univ.myapplication.R;
 
 public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.FlightViewHolder>
@@ -26,9 +28,6 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
     public FlightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
     {
 
-        //TextView callSignTextView = new TextView(parent.getContext());
-        //TextView test = new TextView(parent.getContext());
-        //return new FlightViewHolder(callSignTextView);
         return new FlightViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.flight_item, parent, false));
     }
 
@@ -37,7 +36,6 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
     {
         Log.i(TAG, mFlightsList.get(position).getCallsign());
         holder.onBind(position);
-        //holder.callSignView.setText(mFlightsList.get(position).getCallsign());
 
     }
 
@@ -76,7 +74,9 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
             callSignView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    callSignView.setText("blob");
+                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                    MapFlightActivity.startActivity(activity,mFlight.getIcao24(),mFlight.getFirstSeen(),mFlight.getEstDepartureAirport(), mFlight.getEstArrivalAirport());
+
                 }
             });
         }

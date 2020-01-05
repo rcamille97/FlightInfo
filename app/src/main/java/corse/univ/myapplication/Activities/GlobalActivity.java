@@ -1,9 +1,11 @@
-package corse.univ.myapplication;
+package corse.univ.myapplication.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import corse.univ.myapplication.R;
 import corse.univ.myapplication.ui.flightlist.FlightListFragment;
 
 public class GlobalActivity extends AppCompatActivity {

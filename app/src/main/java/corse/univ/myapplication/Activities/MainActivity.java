@@ -1,4 +1,4 @@
-package corse.univ.myapplication;
+package corse.univ.myapplication.Activities;
 
 import android.os.Bundle;
 
@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import corse.univ.myapplication.R;
 
 import android.view.Menu;
 
