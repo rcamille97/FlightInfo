@@ -6,11 +6,6 @@
     android:id="@+id/container"
     tools:context=".ui.mapFlightHistory.MapFlightFragment">
 
-    <Button
-        android:id="@+id/displayDetails"
-        android:text="Voir les détails de l'avion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"

@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.flightstats.Utils;
+
 import androidx.appcompat.app.AppCompatActivity;
 import corse.univ.myapplication.R;
 import corse.univ.myapplication.ui.mapFlightHistory.MapFlightFragment;
+import corse.univ.myapplication.ui.noConnexion.NoConnexionFragment;
 
 public class MapFlightActivity extends AppCompatActivity {
 
+    private static final String TAG        = "MapFlightActivity";
     private static final String BEGIN     = "begin";
     private static final String ICAO       = "icao";
     private static final String DEPARTURE       = "departure";
@@ -41,9 +45,11 @@ public class MapFlightActivity extends AppCompatActivity {
         String arrival = intent.getStringExtra(ARRIVAL);;
 
 
-        if (savedInstanceState == null)
+        if (savedInstanceState == null  && Utils.Companion.isNetworkAvailable(this))
         {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, MapFlightFragment.newInstance(icao,begin,departure,arrival)).commitNow();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, MapFlightFragment.newInstance(icao,begin,departure,arrival),TAG).commitNow();
+        }else{
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, NoConnexionFragment.newInstance(TAG)).commitNow();
         }
     }
 

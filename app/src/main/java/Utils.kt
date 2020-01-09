@@ -1,6 +1,7 @@
 package com.example.flightstats
 
 import android.content.Context
+import android.net.ConnectivityManager
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -115,6 +116,12 @@ class Utils private constructor() {
             }
 
             _saveData(filteredAirports.toString().toByteArray(), "tempJson")
+        }
+
+        fun isNetworkAvailable(mContext: Context): Boolean {
+            val connectivityManager = mContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
     }
 }

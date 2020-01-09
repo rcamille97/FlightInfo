@@ -27,6 +27,7 @@ import corse.univ.myapplication.Activities.GlobalActivity;
 import corse.univ.myapplication.R;
 import managers.AirportManager;
 
+//TODO:: make view when no internet connexion
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -44,16 +45,8 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        airportManager = AirportManager.getInstance();
-        switchToFrom = root.findViewById(R.id.switchToFrom);
         fromDate = root.findViewById(R.id.fromDate);
         toDate = root.findViewById(R.id.toDate);
-        okButton = root.findViewById(R.id.okButton);
-
-
-        Calendar currentCalendar = Calendar.getInstance();
-        updateDateLabel(fromDate, currentCalendar);
-        updateDateLabel(toDate, currentCalendar);
 
         homeViewModel.getFromCalendarLive().observe(this, new Observer<Calendar>()
         {
@@ -63,6 +56,7 @@ public class HomeFragment extends Fragment {
                 updateDateLabel(fromDate, calendar);
             }
         });
+
         homeViewModel.getToCalendarLive().observe(this, new Observer<Calendar>()
         {
             @Override
@@ -105,7 +99,18 @@ public class HomeFragment extends Fragment {
         });
 
 
-        //List<Airport> airportList = Utils.Companion.generateAirportList();
+
+        airportManager = AirportManager.getInstance();
+        switchToFrom = root.findViewById(R.id.switchToFrom);
+
+        okButton = root.findViewById(R.id.okButton);
+
+
+        Calendar currentCalendar = Calendar.getInstance();
+        updateDateLabel(fromDate, currentCalendar);
+        updateDateLabel(toDate, currentCalendar);
+
+        List<Airport> airportList = AirportManager.getInstance().getAirportList();
         List<String> airportListString = new ArrayList<>();
         for (Airport airport: airportManager.getAirportList() ){
             airportListString.add(airport.getFormattedName());
@@ -158,7 +163,11 @@ public class HomeFragment extends Fragment {
 
     private void updateDateLabel(EditText dateEditText, Calendar calendar)
     {
-        dateEditText.setText(calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR));
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+
+        dateEditText.setText(day + "/" + month + "/" + year);
     }
 
     private void doSearch(){

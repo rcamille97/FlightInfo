@@ -1,12 +1,14 @@
 package corse.univ.myapplication.ui.mapFlightHistory;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.flightstats.Airport;
@@ -30,6 +32,7 @@ import java.util.List;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import corse.univ.myapplication.Activities.MapLiveTrackActivity;
 import corse.univ.myapplication.R;
 import managers.AirportManager;
 
@@ -63,24 +66,22 @@ public class MapFlightFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_flight_history_fragment, container, false);
-        displayDetails = rootView.findViewById(R.id.displayDetails);
-        displayDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                displayDetails.setText("clicked");
-            }
 
-        });
-        Bundle arguments = getArguments();
-
-        mViewModel = ViewModelProviders.of(this).get(MapFlightViewModel.class);
-        if(arguments!=null)
-            mViewModel.loadData(arguments.getString(ICAO), arguments.getLong(BEGIN));
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume(); // needed to get the map to display immediately
 
+        displayDetails = rootView.findViewById(R.id.displayDetails);
+        displayDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Bundle arguments = getArguments();
+                        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                        MapLiveTrackActivity.startActivity(activity, arguments.getString(ICAO));
+                        Log.i("AAAA", "clicked");
+                    }
+        });
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
@@ -92,8 +93,15 @@ public class MapFlightFragment extends Fragment{
             @Override
             public void onMapReady(GoogleMap mMap) {
                 Bundle arguments = getArguments();
+
+                mViewModel = ViewModelProviders.of(getActivity()).get(MapFlightViewModel.class);
+                if(arguments!=null)
+                    mViewModel.loadData(arguments.getString(ICAO), arguments.getLong(BEGIN));
+                //MapLiveTrackActivity.startActivity(getActivity(), arguments.getString(ICAO));
                 googleMap = mMap;
                 googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+
 
                 // For dropping a marker at a point on the Map
                 if(getCoordinates(arguments.getString(DEPARTURE))!=null){
@@ -138,6 +146,7 @@ public class MapFlightFragment extends Fragment{
 
         return rootView;
     }
+
 
     public Float[] getCoordinates(String airport){
         AirportManager airportManager = AirportManager.getInstance();

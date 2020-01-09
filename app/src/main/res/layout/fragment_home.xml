@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background= "@drawable/background"
+    >
 
     <TextView
         android:id="@+id/text_home"
@@ -30,22 +32,25 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="409dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/text_home" />
 
     <Button
         android:id="@+id/okButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:text="ok"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="Search"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -54,13 +59,13 @@
         android:id="@+id/switchToFrom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="373dp"
-        app:layout_constraintBottom_toTopOf="@+id/okButton"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner"/>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/departure_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Departure"
@@ -70,7 +75,7 @@
         app:layout_constraintTop_toTopOf="@+id/switchToFrom" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/arrival_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Arrival"
@@ -81,57 +86,59 @@
 
     <EditText
         android:id="@+id/fromDate"
-        android:layout_width="138dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="57dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        android:focusable="false"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:clickable="true"
-        android:cursorVisible="false"
-        android:textAlignment="center"
+        android:editable="false"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:focusable="false"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/toDate"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/from_textview"/>
 
     <EditText
         android:id="@+id/toDate"
-        android:layout_width="134dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="60dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:editable="false"
+        android:gravity="center_horizontal"
         android:ems="10"
+        android:focusable="false"
         android:inputType="textPersonName"
         android:text="Name"
-        android:focusable="false"
-        android:clickable="true"
-        android:cursorVisible="false"
-        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/fromDate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fromDate"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toTopOf="@+id/fromDate" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/from_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
+        android:layout_marginTop="32dp"
         android:text="From"
-        app:layout_constraintBottom_toBottomOf="@+id/textView6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView6"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintEnd_toEndOf="@+id/fromDate"
+        app:layout_constraintStart_toStartOf="@+id/fromDate"
+        app:layout_constraintTop_toBottomOf="@+id/switchToFrom" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/to_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="61dp"
-        android:text="to"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.637"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        android:text="To"
+        app:layout_constraintBottom_toBottomOf="@+id/from_textview"
+        app:layout_constraintEnd_toEndOf="@+id/toDate"
+        app:layout_constraintStart_toStartOf="@+id/toDate"
+        app:layout_constraintTop_toTopOf="@+id/from_textview"  />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

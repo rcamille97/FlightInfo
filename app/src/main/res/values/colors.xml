@@ -3,4 +3,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="callsign">#020000</color>
+    <color name="aeroport_name">#290000</color>
+    <color name="seen">#503b3b</color>
+    <color name="time_of_flight">#4b4040</color>
 </resources>
