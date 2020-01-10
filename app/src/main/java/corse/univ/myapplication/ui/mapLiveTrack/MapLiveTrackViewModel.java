@@ -11,6 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.flightstats.corse.univ.myapplication.data.Aircraft;
 import com.example.flightstats.corse.univ.myapplication.data.AircraftData;
+import com.example.flightstats.corse.univ.myapplication.data.AircraftHistory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,6 +33,7 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
     private static final String TAG = MapLiveTrackViewModel.class.getSimpleName();
 
     MutableLiveData<Aircraft> mapLiveTrackLiveData = new MutableLiveData<>();
+    MutableLiveData<AircraftHistory> mapAircraftHistoryLiveData = new MutableLiveData<>();
 
     public MapLiveTrackViewModel(@NonNull Application application) {
         super(application);
@@ -64,26 +66,37 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
                             Log.i("a", jsonAircraftData.toString());
                             if (jsonAircraftData != null) {
                                 JsonArray mData = jsonAircraftData.get(0).getAsJsonArray();
+                                Boolean isNull = false;
+                                for(Object data : mData){
+                                    if(data == null)
+                                        isNull= true;
+                                }
+                                if(!isNull){
+                                    aircraftData = new AircraftData(
+                                            mData.get(0).getAsString(),
+                                            mData.get(1).getAsString(),
+                                            mData.get(2).getAsString(),
+                                            mData.get(3).getAsLong(),
+                                            mData.get(4).getAsLong(),
+                                            mData.get(5).getAsFloat(),
+                                            mData.get(6).getAsFloat(),
+                                            mData.get(7).getAsFloat(),
+                                            mData.get(8).getAsBoolean(),
+                                            mData.get(9).getAsFloat(),
+                                            mData.get(10).getAsFloat(),
+                                            mData.get(11).getAsFloat(),
+                                            mData.get(13).getAsFloat()
+                                    );
+                                    aircraft = new Aircraft(flightsJsonArray.get("time").getAsLong(), aircraftData);
+                                    mapLiveTrackLiveData.setValue(aircraft);
+                                }else
+                                    mapLiveTrackLiveData.setValue(null);
 
-                                aircraftData = new AircraftData(
-                                        mData.get(0).getAsString(),
-                                        mData.get(1).getAsString(),
-                                        mData.get(2).getAsString(),
-                                        mData.get(3).getAsLong(),
-                                        mData.get(4).getAsLong(),
-                                        mData.get(5).getAsFloat(),
-                                        mData.get(6).getAsFloat(),
-                                        mData.get(7).getAsFloat(),
-                                        mData.get(8).getAsBoolean(),
-                                        mData.get(9).getAsFloat()
-                                );
-                                aircraft = new Aircraft(flightsJsonArray.get("time").getAsLong(), aircraftData);
-                                mapLiveTrackLiveData.setValue(aircraft);
                             }
-                       }
-                         /*else{
+                       }else{
                             mapLiveTrackLiveData.setValue(null);
-                        }*/
+                        }
+
                     }
 
                 }, new Response.ErrorListener() {
@@ -97,6 +110,52 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
         requestQueue.add(stringRequest);
     }
 
+    public void loadAircraftHistory(String icao){
+
+        //On obtient la date du jour pour la requête
+        long end = System.currentTimeMillis()/1000;
+        //On convertit 3 jours en secondes pour soustraire à la date d'aujourd'hui
+        int NUMBER_OF_DAYS = 3;
+        long days = NUMBER_OF_DAYS*24*60*60;
+        //On calcule la date de début pour notre requête
+        long begin = end - days;
+
+
+        StringBuilder urlBuilder = new StringBuilder("https://opensky-network.org/api/flights/");
+        urlBuilder.append("aircraft").append("?").append("icao24=").append(icao).append("&begin=").append(begin).append("&end=")
+                .append(end);
+        Log.i(TAG, "URL is " + urlBuilder.toString());
+        String url = urlBuilder.toString();
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response)
+                    {
+                        Log.i(TAG, "String response of History is " + response);
+                        Aircraft aircraft;
+                        AircraftHistory aircraftHistory;
+
+                        /*JsonObject flightsJsonArray = getPathRequestJson(response);
+                        JsonArray jsonAircraftHistory;
+                        */
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplication().getBaseContext());
+        requestQueue.add(stringRequest);
+
+    }
+
 
     private JsonObject getPathRequestJson(String jsonString)
 
@@ -105,7 +164,7 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
         JsonElement jsonElement = parser.parse(jsonString);
         return jsonElement.getAsJsonObject();
     }
-    //Url for live tracking: https://opensky-network.org/api/states/all?icao24=3c4b26
+    //Url for live tracking: https://opensky-network.org/api/states/aircraft?icao24=3c675a&begin=1517184000&end=1517270400
     //For specific plane aircraft?icao24=3c675a&begin=1517184000&end=1517270400"
 
 }

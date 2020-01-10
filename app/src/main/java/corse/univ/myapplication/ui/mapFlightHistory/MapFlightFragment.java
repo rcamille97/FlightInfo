@@ -38,7 +38,7 @@ import corse.univ.myapplication.R;
 import managers.AirportManager;
 
 
-public class MapFlightFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener{
+public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
 
     private MapView mMapView;
     private GoogleMap googleMap;
@@ -153,7 +153,6 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback, G
             }
         });
 
-        googleMap.setOnInfoWindowClickListener(this);
     }
 
 
@@ -182,8 +181,4 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback, G
         mMapView.onLowMemory();
     }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(getContext(), "bouh", Toast.LENGTH_SHORT);
-    }
 }

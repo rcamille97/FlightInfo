@@ -36,6 +36,7 @@ public class MapLiveTrackFragment extends Fragment implements OnMapReadyCallback
     private String mIcao;
     private Float mVitesse;
     private Float altitude;
+    private Float vertical_rate;
 
     private MapLiveTrackViewModel mViewModel;
 
@@ -71,29 +72,35 @@ public class MapLiveTrackFragment extends Fragment implements OnMapReadyCallback
 
         Bundle arguments = getArguments();
 
-        if(arguments!=null)
+        if(arguments!=null){
             mViewModel.loadData(arguments.getString(ICAO));
+            mViewModel.loadAircraftHistory(arguments.getString(ICAO));
+        }
+
 
 
         mViewModel.mapLiveTrackLiveData.observe(getViewLifecycleOwner(), new Observer<Aircraft>()
         {
             @Override
             public void onChanged(Aircraft aircraft) {
-                AircraftData aircraftData = aircraft.getStates();
-                if(aircraftData!=null){
-                    Toast.makeText(getActivity(),"Click on marker to see data",Toast.LENGTH_LONG).show();
-                    LatLng position = new LatLng(aircraftData.getLatitude(),aircraftData.getLongitude());
-                    mIcao = aircraftData.getIcao();
-                    mVitesse = aircraftData.getVelocity();
-                    altitude = aircraftData.getBaro_altitude();
+                if (aircraft != null) {
+                    AircraftData aircraftData = aircraft.getStates();
+                    if(aircraftData!=null){
+                        Toast.makeText(getActivity(),"Click on marker to see data",Toast.LENGTH_LONG).show();
+                        LatLng position = new LatLng(aircraftData.getLatitude(),aircraftData.getLongitude());
+                        mIcao = aircraftData.getIcao();
+                        mVitesse = aircraftData.getVelocity();
+                        altitude = aircraftData.getBaro_altitude();
+                        vertical_rate = aircraftData.getVertical_rate();
 
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(position)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.position))
-                            .title(aircraftData.getCallsign()));
-                    Log.i("a","added" + aircraftData.getLatitude() + ";" + aircraftData.getLongitude());
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(position).zoom(7).build();
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(position)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.position))
+                                .title(aircraftData.getCallsign()));
+                        Log.i("a","added" + aircraftData.getLatitude() + ";" + aircraftData.getLongitude());
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(position).zoom(7).build();
+                        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
                 }else{
                     Toast.makeText(getActivity(),"No data available for this aircraft",Toast.LENGTH_LONG).show();
                     Log.i("a","no data");
@@ -132,9 +139,16 @@ public class MapLiveTrackFragment extends Fragment implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        String isMontee;
+        if(vertical_rate<0){
+            isMontee = "Descente";
+        }else{
+            isMontee = "Montée";
+        }
         Toast.makeText(getContext(),"Numero du Vol: " + mIcao
                 + "\nVitesse actuelle: " + mVitesse
-                + "\nAltitude: " + altitude ,Toast.LENGTH_LONG).show();
+                + "\nAltitude: " + altitude
+                + "\nMontée ou descente: " +isMontee,Toast.LENGTH_LONG).show();
         return true;
     }
 }
