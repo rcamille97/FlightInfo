@@ -26,7 +26,7 @@ public class MapLiveTrackActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_live_tracking);
+        setContentView(R.layout.map_fragment);
         Intent intent = getIntent();
         String icao = intent.getStringExtra(ICAO);
         if (savedInstanceState == null)

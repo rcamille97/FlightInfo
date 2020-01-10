@@ -3,6 +3,9 @@ package corse.univ.myapplication.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import corse.univ.myapplication.R;
 import corse.univ.myapplication.ui.mapFlightHistory.MapFlightFragment;
@@ -15,6 +18,7 @@ public class MapFlightActivity extends AppCompatActivity {
     private static final String ICAO       = "icao";
     private static final String DEPARTURE       = "departure";
     private static final String ARRIVAL       = "arrival";
+    private String mIcao;
 
 
     public static void startActivity(Activity activity, String icao, Long date, String departure, String arrival)
@@ -32,12 +36,13 @@ public class MapFlightActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_flight_history_fragment);
+        setContentView(R.layout.map_fragment);
 
         Intent intent = getIntent();
 
         long begin = intent.getLongExtra(BEGIN, -1);
         String icao = intent.getStringExtra(ICAO);
+        mIcao = icao;
         String departure = intent.getStringExtra(DEPARTURE);
         String arrival = intent.getStringExtra(ARRIVAL);;
 

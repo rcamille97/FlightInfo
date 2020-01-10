@@ -15,9 +15,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import androidx.fragment.app.Fragment;
@@ -25,11 +27,15 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import corse.univ.myapplication.R;
 
-public class MapLiveTrackFragment extends Fragment {
+public class MapLiveTrackFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     MapView mMapView;
     private GoogleMap googleMap;
 
     private static final String ICAO         = "icao";
+
+    private String mIcao;
+    private Float mVitesse;
+    private Float altitude;
 
     private MapLiveTrackViewModel mViewModel;
 
@@ -44,55 +50,58 @@ public class MapLiveTrackFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_live_tracking, container, false);
-        Bundle arguments = getArguments();
-
-        mViewModel = ViewModelProviders.of(this).get(MapLiveTrackViewModel.class);
-        if(arguments!=null)
-            mViewModel.loadData(arguments.getString(ICAO));
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
+        mMapView.getMapAsync(this);
         mMapView.onResume(); // needed to get the map to display immediately
 
+        return rootView;
+    }
 
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
+    @Override
+    public void onMapReady(GoogleMap mMap) {
+
+        MapsInitializer.initialize(getContext());
+
+        googleMap = mMap;
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        mViewModel = ViewModelProviders.of(this).get(MapLiveTrackViewModel.class);
+
+        Bundle arguments = getArguments();
+
+        if(arguments!=null)
+            mViewModel.loadData(arguments.getString(ICAO));
+
+
+        mViewModel.mapLiveTrackLiveData.observe(getViewLifecycleOwner(), new Observer<Aircraft>()
+        {
             @Override
-            public void onMapReady(GoogleMap mMap) {
-                Bundle arguments = getArguments();
-                googleMap = mMap;
-                googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+            public void onChanged(Aircraft aircraft) {
+                AircraftData aircraftData = aircraft.getStates();
+                if(aircraftData!=null){
+                    Toast.makeText(getActivity(),"Click on marker to see data",Toast.LENGTH_LONG).show();
+                    LatLng position = new LatLng(aircraftData.getLatitude(),aircraftData.getLongitude());
+                    mIcao = aircraftData.getIcao();
+                    mVitesse = aircraftData.getVelocity();
+                    altitude = aircraftData.getBaro_altitude();
 
-                if(arguments!=null)
-                    mViewModel.loadData(arguments.getString(ICAO));
-
-                mViewModel.mapLiveTrackLiveData.observe(getViewLifecycleOwner(), new Observer<Aircraft>()
-                {
-                    @Override
-                    public void onChanged(Aircraft aircraft) {
-                        AircraftData aircraftData = aircraft.getStates();
-                        if(aircraftData!=null){
-                            LatLng departure = new LatLng(aircraftData.getLatitude(),aircraftData.getLongitude());
-                            googleMap.addMarker(new MarkerOptions().position(departure));
-                            CameraPosition cameraPosition = new CameraPosition.Builder().target(departure).zoom(5).build();
-                            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        }else{
-                            Toast.makeText(getActivity(),"No data available",Toast.LENGTH_LONG);
-                            Log.i("a","no data");
-                        }
-                    }
-                });
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(position)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.position))
+                            .title(aircraftData.getCallsign()));
+                    Log.i("a","added" + aircraftData.getLatitude() + ";" + aircraftData.getLongitude());
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(position).zoom(7).build();
+                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }else{
+                    Toast.makeText(getActivity(),"No data available for this aircraft",Toast.LENGTH_LONG).show();
+                    Log.i("a","no data");
+                }
             }
         });
+        googleMap.setOnMarkerClickListener(this);
 
-
-
-        return rootView;
     }
 
     @Override
@@ -118,5 +127,14 @@ public class MapLiveTrackFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Toast.makeText(getContext(),"Numero du Vol: " + mIcao
+                + "\nVitesse actuelle: " + mVitesse
+                + "\nAltitude: " + altitude ,Toast.LENGTH_LONG).show();
+        return true;
     }
 }

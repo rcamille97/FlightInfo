@@ -18,9 +18,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -36,7 +38,7 @@ import corse.univ.myapplication.R;
 import managers.AirportManager;
 
 
-public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
+public class MapFlightFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener{
 
     private MapView mMapView;
     private GoogleMap googleMap;
@@ -91,7 +93,6 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap mMap) {
         MapsInitializer.initialize(getContext());
 
-
         googleMap = mMap;
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
@@ -103,19 +104,23 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
         // For dropping a marker at a point on the Map
         if(getCoordinates(arguments.getString(DEPARTURE))!=null){
             LatLng departure = new LatLng(getCoordinates(arguments.getString(DEPARTURE))[0], getCoordinates(arguments.getString(DEPARTURE))[1]);
-            googleMap.addMarker(new MarkerOptions().position(departure));
+            googleMap.addMarker(new MarkerOptions().position(departure)
+            .title(arguments.getString(DEPARTURE))
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.departure)));
             CameraPosition cameraPosition = new CameraPosition.Builder().target(departure).zoom(4).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }else{
-            Toast.makeText(getContext(), "Can't display departure airport", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "Can't display departure airport", Toast.LENGTH_LONG).show();
         }
         if(getCoordinates(arguments.getString(ARRIVAL))!=null){
             LatLng arrival = new LatLng(getCoordinates(arguments.getString(ARRIVAL))[0], getCoordinates(arguments.getString(ARRIVAL))[1]);
-            googleMap.addMarker(new MarkerOptions().position(arrival));
+            googleMap.addMarker(new MarkerOptions().position(arrival)
+                    .title(arguments.getString(ARRIVAL))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrival)));
             CameraPosition cameraPosition = new CameraPosition.Builder().target(arrival).zoom(4).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }else{
-            Toast.makeText(getContext(), "Can't display arrival airport", Toast.LENGTH_LONG);
+            Toast.makeText(getContext(), "Can't display arrival airport", Toast.LENGTH_LONG).show();
         }
 
         mViewModel.mapFlightLiveData.observe(getViewLifecycleOwner(), new Observer<FlightTrack>()
@@ -147,6 +152,8 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
 
             }
         });
+
+        googleMap.setOnInfoWindowClickListener(this);
     }
 
 
@@ -175,4 +182,8 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
         mMapView.onLowMemory();
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(getContext(), "bouh", Toast.LENGTH_SHORT);
+    }
 }

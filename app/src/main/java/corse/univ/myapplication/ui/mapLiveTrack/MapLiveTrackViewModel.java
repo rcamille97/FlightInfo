@@ -57,33 +57,33 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
                         AircraftData aircraftData;
 
                         JsonObject flightsJsonArray = getPathRequestJson(response);
-                        JsonArray jsonAircraftData = flightsJsonArray.get("states").getAsJsonArray();
-                        Log.i("a", jsonAircraftData.getAsString());
+                        JsonArray jsonAircraftData;
+                        if(!flightsJsonArray.get("states").isJsonNull()){
+                            Log.i("a",flightsJsonArray.get("states").toString());
+                            jsonAircraftData = flightsJsonArray.get("states").getAsJsonArray();
+                            Log.i("a", jsonAircraftData.toString());
+                            if (jsonAircraftData != null) {
+                                JsonArray mData = jsonAircraftData.get(0).getAsJsonArray();
 
-                        if (jsonAircraftData != null){
-                            aircraftData = new AircraftData(
-                                    jsonAircraftData.get(0).getAsString(),
-                                    jsonAircraftData.get(1).getAsString(),
-                                    jsonAircraftData.get(2).getAsString(),
-                                    jsonAircraftData.get(3).getAsLong(),
-                                    jsonAircraftData.get(4).getAsLong(),
-                                    jsonAircraftData.get(6).getAsFloat(),
-                                    jsonAircraftData.get(7).getAsFloat(),
-                                    jsonAircraftData.get(8).getAsFloat(),
-                                    jsonAircraftData.get(9).getAsBoolean(),
-                                    jsonAircraftData.get(10).getAsFloat(),
-                                    jsonAircraftData.get(11).getAsFloat(),
-                                    jsonAircraftData.get(12).getAsFloat(),
-                                    jsonAircraftData.get(14).getAsFloat(),
-                                    jsonAircraftData.get(15).getAsString(),
-                                    jsonAircraftData.get(16).getAsBoolean(),
-                                    jsonAircraftData.get(17).getAsLong()
-                            );
-                            aircraft = new Aircraft(flightsJsonArray.get("time").getAsLong(), aircraftData);
-                            mapLiveTrackLiveData.setValue(aircraft);
-                        }else{
+                                aircraftData = new AircraftData(
+                                        mData.get(0).getAsString(),
+                                        mData.get(1).getAsString(),
+                                        mData.get(2).getAsString(),
+                                        mData.get(3).getAsLong(),
+                                        mData.get(4).getAsLong(),
+                                        mData.get(5).getAsFloat(),
+                                        mData.get(6).getAsFloat(),
+                                        mData.get(7).getAsFloat(),
+                                        mData.get(8).getAsBoolean(),
+                                        mData.get(9).getAsFloat()
+                                );
+                                aircraft = new Aircraft(flightsJsonArray.get("time").getAsLong(), aircraftData);
+                                mapLiveTrackLiveData.setValue(aircraft);
+                            }
+                       }
+                         /*else{
                             mapLiveTrackLiveData.setValue(null);
-                        }
+                        }*/
                     }
 
                 }, new Response.ErrorListener() {
