@@ -2,6 +2,7 @@ package corse.univ.myapplication.ui.home;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.flightstats.Airport;
+import com.example.flightstats.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,10 +26,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import corse.univ.myapplication.Activities.GlobalActivity;
+import corse.univ.myapplication.Activities.NoConnexionActivity;
 import corse.univ.myapplication.R;
 import managers.AirportManager;
 
-//TODO:: make view when no internet connexion
+
+//TODO:: make null verification, clean code, tablet view, screen 3 button
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
@@ -41,8 +45,10 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         fromDate = root.findViewById(R.id.fromDate);
@@ -110,7 +116,6 @@ public class HomeFragment extends Fragment {
         updateDateLabel(fromDate, currentCalendar);
         updateDateLabel(toDate, currentCalendar);
 
-        List<Airport> airportList = AirportManager.getInstance().getAirportList();
         List<String> airportListString = new ArrayList<>();
         for (Airport airport: airportManager.getAirportList() ){
             airportListString.add(airport.getFormattedName());
@@ -131,6 +136,9 @@ public class HomeFragment extends Fragment {
 
         });
 
+        if(!Utils.Companion.isNetworkAvailable(getContext())){
+            NoConnexionActivity.startActivity(getActivity());
+        }
         return root;
     }
 
@@ -195,6 +203,11 @@ public class HomeFragment extends Fragment {
         long begin = fromCalendar.getTimeInMillis() / 1000;
         long end = toCalendar.getTimeInMillis() / 1000;
 
-        GlobalActivity.startActivity(getActivity(), begin, end, isArrival, selectedAirport.getIcao());
+        if(Utils.Companion.isNetworkAvailable(getActivity())==true){
+            GlobalActivity.startActivity(getActivity(), begin, end, isArrival, selectedAirport.getIcao());
+        }else{
+            NoConnexionActivity.startActivity(getActivity());
+        }
+
     }
 }

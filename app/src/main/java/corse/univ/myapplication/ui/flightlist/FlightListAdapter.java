@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.flightstats.Utils;
 import com.example.flightstats.corse.univ.myapplication.data.Flight;
 
 import java.util.ArrayList;
@@ -16,7 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import corse.univ.myapplication.Activities.MapFlightActivity;
+import corse.univ.myapplication.Activities.NoConnexionActivity;
 import corse.univ.myapplication.R;
+
+//Adapter for RecyclerView
 
 public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.FlightViewHolder>
 {
@@ -44,6 +48,7 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
     public int getItemCount()
     {
         Log.i(TAG, "taille de la liste: " + mFlightsList.size());
+
         return mFlightsList.size();
     }
 
@@ -63,32 +68,35 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
         TextView timeOfFlight;
         TextView arrival;
         TextView arrivalDate;
-        View mItemView;
         TextView arrivalDay;
         TextView departureDay;
 
         public FlightViewHolder(@NonNull final View itemView)
         {
+
             super(itemView);
+
+            //We get all view from item list
             callSignView = itemView.findViewById(R.id.callSign);
             departure = itemView.findViewById(R.id.aeroportDepart);
             departureDate = itemView.findViewById(R.id.dateDepart);
             timeOfFlight = itemView.findViewById(R.id.tempsVol);
             arrival = itemView.findViewById(R.id.aeroportArrivee);
             arrivalDate = itemView.findViewById(R.id.dateArrivee);
-            mItemView = itemView;
             arrivalDay = itemView.findViewById(R.id.dateArriveeDay);
             departureDay =  itemView.findViewById(R.id.dateDepartDay);
-
 
         }
 
         public void onBind(int position) {
 
             final Flight mFlight = mFlightsList.get(position);
-
+            //Temps de vol d'un avion en timestamp
             int flightLasting = (int) (mFlight.getLastSeen() - mFlight.getFirstSeen());
+            //On convertit le temps de vol en format normal
+            int mFlightLastingHour = flightLasting/3600;
             int mFlightLastingMin = (flightLasting%3600)/60 ;
+            //On crée la chaine de caractère associée au temps de vol, on l'utilisera pour l'insérer dans la vue associée au temps de vol
             String mFlightLasting;
             if (mFlightLastingMin<10){
                 mFlightLasting = flightLasting/3600 + "h0" + mFlightLastingMin;
@@ -96,6 +104,7 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
                 mFlightLasting = flightLasting/3600 + "h" + mFlightLastingMin;
             }
 
+            //On convertit de même les dates de départ et d'arrivée
             String mDepartureDateMin;
             String mArrivalDateMin;
             Date mdepartureDate = new Date(mFlight.getFirstSeen() *1000);
@@ -113,7 +122,7 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
                 mArrivalDateMin = "" + marrivalDate.getMinutes();
             }
 
-
+            //On place le texte dans le list item
             callSignView.setText("Vol n°" + mFlight.getCallsign());
             departure.setText(mFlight.getEstDepartureAirport());
             departureDate.setText(mdepartureDate.getHours() + "H" + mDepartureDateMin);
@@ -123,11 +132,18 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
             arrivalDay.setText(marrivalDate.getDay() + "/" + marrivalDate.getMonth() + "/" + marrivalDate.getYear());
             departureDay.setText(mdepartureDate.getDay() + "/" + mdepartureDate.getMonth() + "/" + mdepartureDate.getYear());
 
+            //On met un listener sur l'item de la liste afin que part un click dessus, l'utilisateur accède à la carte avec les informations du vol
+            //Si il n'y a pas de connexion internet, on démarre son activité associée
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                    MapFlightActivity.startActivity(activity,mFlight.getIcao24(),mFlight.getFirstSeen(),mFlight.getEstDepartureAirport(), mFlight.getEstArrivalAirport());
+                    if(Utils.Companion.isNetworkAvailable(activity)){
+                        MapFlightActivity.startActivity(activity,mFlight.getIcao24(),mFlight.getFirstSeen(),mFlight.getEstDepartureAirport(), mFlight.getEstArrivalAirport());
+
+                    }else{
+                        NoConnexionActivity.startActivity(activity);
+                    }
 
                 }
             });

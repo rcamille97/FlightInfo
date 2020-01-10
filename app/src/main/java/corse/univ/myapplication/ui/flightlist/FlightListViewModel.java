@@ -35,6 +35,7 @@ public class FlightListViewModel extends AndroidViewModel
 
 
 
+    //Methode pour requeter l'API avec les paramètres demandés
     public void loadData(long begin, long end, boolean isArrival, String icao)
     {
         StringBuilder urlBuilder = new StringBuilder("https://opensky-network.org/api/flights/");
@@ -68,6 +69,7 @@ public class FlightListViewModel extends AndroidViewModel
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
                 Log.e(TAG, error.toString());
             }
         });

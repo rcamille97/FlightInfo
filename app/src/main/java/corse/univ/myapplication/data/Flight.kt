@@ -1,5 +1,6 @@
 package com.example.flightstats.corse.univ.myapplication.data
 
+//Information about a Flight, used in FlightList fragment
 class Flight {
     var icao24: String? = null
     var firstSeen: Long = 0

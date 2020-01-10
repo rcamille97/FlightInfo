@@ -76,6 +76,7 @@ public class FlightListFragment extends Fragment
             public void onChanged(List<Flight> flights)
             {
                 Log.i(TAG, "updating list with size = " + flights.size());
+
                 mAdapter.setFlights(flights);
             }
         });

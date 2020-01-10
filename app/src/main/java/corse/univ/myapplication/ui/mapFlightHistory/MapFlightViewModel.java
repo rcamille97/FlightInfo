@@ -35,6 +35,7 @@ public class MapFlightViewModel extends AndroidViewModel {
         super(application);
     }
 
+    //We download data from API
     public void loadData(String icao, long date)
     {
         StringBuilder urlBuilder = new StringBuilder("https://opensky-network.org/api/tracks/");
@@ -51,10 +52,9 @@ public class MapFlightViewModel extends AndroidViewModel {
                         Log.i(TAG, "String response is " + response);
                         FlightTrack flightTrack;
                         List<FlightPath> flightPathList = new ArrayList<>();
-                        Gson gson = new Gson();
-
                         JsonObject flightsJsonArray = getPathRequestJson(response);
 
+                        //Creating new objects from results
                         for (JsonElement flightPath : flightsJsonArray.getAsJsonArray("path"))
                         {
                             flightPathList.add(new FlightPath(flightPath.getAsJsonArray().get(0).getAsLong(),
@@ -71,6 +71,7 @@ public class MapFlightViewModel extends AndroidViewModel {
                                                     flightsJsonArray.get("endTime").getAsLong(),
                                                     flightPathList);
                         mapFlightLiveData.setValue(flightTrack);
+
                     }
 
                 }, new Response.ErrorListener() {
@@ -83,9 +84,7 @@ public class MapFlightViewModel extends AndroidViewModel {
         requestQueue.add(stringRequest);
     }
 
-
     private JsonObject getPathRequestJson(String jsonString)
-
     {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);

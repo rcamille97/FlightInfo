@@ -4,13 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.flightstats.Utils;
-
 import corse.univ.myapplication.R;
 import corse.univ.myapplication.ui.flightlist.FlightListFragment;
-import corse.univ.myapplication.ui.noConnexion.NoConnexionFragment;
 
+//Activity to start FlightListFragment called in HomeFragment class
 public class GlobalActivity extends AppCompatActivity {
 
     private static final String TAG        = "GlobalActivity";
@@ -19,6 +16,7 @@ public class GlobalActivity extends AppCompatActivity {
     private static final String IS_ARRIVAL = "isArrival";
     private static final String ICAO       = "icao";
 
+    //We get the info needed given in home fragment
     public static void startActivity(Activity activity, long begin, long end, boolean isArrival, String icao)
     {
 
@@ -43,11 +41,9 @@ public class GlobalActivity extends AppCompatActivity {
         boolean isArrival = intent.getBooleanExtra(IS_ARRIVAL, false);
         String icao = intent.getStringExtra(ICAO);
 
-        if (savedInstanceState == null && Utils.Companion.isNetworkAvailable(this))
+        if (savedInstanceState == null)
         {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, FlightListFragment.newInstance(begin, end, isArrival, icao),TAG).commitNow();
-        }else{
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, NoConnexionFragment.newInstance(TAG)).commitNow();
         }
     }
 

@@ -83,7 +83,7 @@ public class MapLiveTrackFragment extends Fragment {
                             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         }else{
                             Toast.makeText(getActivity(),"No data available",Toast.LENGTH_LONG);
-                            Log.i("LE TAG DE LA MORT","no data");
+                            Log.i("a","no data");
                         }
                     }
                 });

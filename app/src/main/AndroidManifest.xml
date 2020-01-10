@@ -17,6 +17,7 @@
         <activity android:name=".Activities.GlobalActivity"></activity>
         <activity android:name=".Activities.MapFlightActivity"></activity>
         <activity android:name=".Activities.MapLiveTrackActivity"></activity>
+        <activity android:name=".Activities.NoConnexionActivity"></activity>
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/app_name"

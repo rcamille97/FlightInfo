@@ -33,12 +33,12 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
 
     MutableLiveData<Aircraft> mapLiveTrackLiveData = new MutableLiveData<>();
 
-
     public MapLiveTrackViewModel(@NonNull Application application) {
         super(application);
     }
 
 
+    //We download data from API
     public void loadData(String icao)
     {
         StringBuilder urlBuilder = new StringBuilder("https://opensky-network.org/api/states/");
@@ -55,11 +55,11 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
                         Log.i(TAG, "String response is " + response);
                         Aircraft aircraft;
                         AircraftData aircraftData;
-                        Gson gson = new Gson();
 
                         JsonObject flightsJsonArray = getPathRequestJson(response);
                         JsonArray jsonAircraftData = flightsJsonArray.get("states").getAsJsonArray();
-                        Log.i("AAA", jsonAircraftData.getAsString());
+                        Log.i("a", jsonAircraftData.getAsString());
+
                         if (jsonAircraftData != null){
                             aircraftData = new AircraftData(
                                     jsonAircraftData.get(0).getAsString(),
@@ -92,6 +92,7 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
                 Log.e(TAG, error.toString());
             }
         });
+
         RequestQueue requestQueue = Volley.newRequestQueue(getApplication().getBaseContext());
         requestQueue.add(stringRequest);
     }
