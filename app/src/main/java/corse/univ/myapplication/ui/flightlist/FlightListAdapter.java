@@ -42,7 +42,7 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
     @Override
     public void onBindViewHolder(@NonNull FlightViewHolder holder, int position)
     {
-        Log.i(TAG, mFlightsList.get(position).getCallsign());
+
         holder.onBind(position);
 
     }
