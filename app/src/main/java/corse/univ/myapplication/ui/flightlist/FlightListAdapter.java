@@ -9,9 +9,12 @@ import android.widget.TextView;
 import com.example.flightstats.Utils;
 import com.example.flightstats.corse.univ.myapplication.data.Flight;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -94,7 +97,6 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
             //Temps de vol d'un avion en timestamp
             int flightLasting = (int) (mFlight.getLastSeen() - mFlight.getFirstSeen());
             //On convertit le temps de vol en format normal
-            int mFlightLastingHour = flightLasting/3600;
             int mFlightLastingMin = (flightLasting%3600)/60 ;
             //On crée la chaine de caractère associée au temps de vol, on l'utilisera pour l'insérer dans la vue associée au temps de vol
             String mFlightLasting;
@@ -110,6 +112,13 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
             Date mdepartureDate = new Date(mFlight.getFirstSeen() *1000);
             Date marrivalDate = new Date(mFlight.getLastSeen() * 1000);
 
+            //On convertit les dates à un format exploitables
+            Calendar departureCalendar = Calendar.getInstance();
+            departureCalendar.setTime(mdepartureDate);
+
+            Calendar arrivalCalendar = Calendar.getInstance();
+            arrivalCalendar.setTime(marrivalDate);
+
             if(mdepartureDate.getMinutes()<10){
                 mDepartureDateMin = "0" +mdepartureDate.getMinutes();
             }else{
@@ -122,6 +131,7 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
                 mArrivalDateMin = "" + marrivalDate.getMinutes();
             }
 
+            Log.i("a", "Arrival date format:" + marrivalDate);
             //On place le texte dans le list item
             callSignView.setText("Vol n°" + mFlight.getCallsign());
             departure.setText(mFlight.getEstDepartureAirport());
@@ -129,8 +139,10 @@ public class FlightListAdapter extends RecyclerView.Adapter<FlightListAdapter.Fl
             arrival.setText(mFlight.getEstArrivalAirport());
             arrivalDate.setText(marrivalDate.getHours() + "H" + mArrivalDateMin);
             timeOfFlight.setText( mFlightLasting);
-            arrivalDay.setText(marrivalDate.getDay() + "/" + marrivalDate.getMonth() + "/" + marrivalDate.getYear());
-            departureDay.setText(mdepartureDate.getDay() + "/" + mdepartureDate.getMonth() + "/" + mdepartureDate.getYear());
+
+            //Removing a day and adding int to month to have the right date
+            arrivalDay.setText((arrivalCalendar.get(Calendar.DAY_OF_MONTH)-1) + "/" + (arrivalCalendar.get(Calendar.MONTH)+1) + "/" + arrivalCalendar.get(Calendar.YEAR));
+            departureDay.setText((departureCalendar.get(Calendar.DAY_OF_MONTH)-1) + "/" + (departureCalendar.get(Calendar.MONTH)+1) + "/" + departureCalendar.get(Calendar.YEAR));
 
             //On met un listener sur l'item de la liste afin que part un click dessus, l'utilisateur accède à la carte avec les informations du vol
             //Si il n'y a pas de connexion internet, on démarre son activité associée

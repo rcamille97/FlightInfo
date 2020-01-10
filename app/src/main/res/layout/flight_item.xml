@@ -45,9 +45,10 @@
         android:textColor="@color/seen"
         android:textSize="12sp"
         android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/aeroportArrivee"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/aeroportDepart"
+
         />
 
     <TextView
@@ -58,9 +59,9 @@
         android:textColor="@color/seen"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/aeroportDepart"
+        app:layout_constraintBottom_toTopOf="@id/aeroportArrivee"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
@@ -113,7 +114,6 @@
         android:textAlignment="center"
         android:textColor="@color/time_of_flight"
         android:textSize="16sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/departureImage"
         app:layout_constraintTop_toBottomOf="@+id/callSign"

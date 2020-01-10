@@ -110,6 +110,8 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
         requestQueue.add(stringRequest);
     }
 
+
+    //Tried to start 4bis part but too late, sorry
     public void loadAircraftHistory(String icao){
 
         //On obtient la date du jour pour la requête
@@ -158,13 +160,10 @@ public class MapLiveTrackViewModel extends AndroidViewModel {
 
 
     private JsonObject getPathRequestJson(String jsonString)
-
     {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
         return jsonElement.getAsJsonObject();
     }
-    //Url for live tracking: https://opensky-network.org/api/states/aircraft?icao24=3c675a&begin=1517184000&end=1517270400
-    //For specific plane aircraft?icao24=3c675a&begin=1517184000&end=1517270400"
 
 }

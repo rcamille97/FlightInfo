@@ -35,10 +35,6 @@ public class NoConnexionActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         if(Utils.Companion.isNetworkAvailable(this)){
-            super.onBackPressed();
-        }else{
-            finish();
-        }
-
+            super.onBackPressed();}
     }
 }

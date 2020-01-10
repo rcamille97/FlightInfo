@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.example.flightstats.Airport;
+import com.example.flightstats.Utils;
 import com.example.flightstats.corse.univ.myapplication.data.FlightPath;
 import com.example.flightstats.corse.univ.myapplication.data.FlightTrack;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,6 +35,7 @@ import java.util.List;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import corse.univ.myapplication.Activities.MapLiveTrackActivity;
+import corse.univ.myapplication.Activities.NoConnexionActivity;
 import corse.univ.myapplication.R;
 import managers.AirportManager;
 
@@ -101,7 +103,8 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
         if(arguments!=null)
             mViewModel.loadData(arguments.getString(ICAO), arguments.getLong(BEGIN));
 
-        // For dropping a marker at a point on the Map
+        //We check if departure and arrival airport exists to set them in map
+
         if(getCoordinates(arguments.getString(DEPARTURE))!=null){
             LatLng departure = new LatLng(getCoordinates(arguments.getString(DEPARTURE))[0], getCoordinates(arguments.getString(DEPARTURE))[1]);
             googleMap.addMarker(new MarkerOptions().position(departure)
@@ -112,6 +115,7 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
         }else{
             Toast.makeText(getContext(), "Can't display departure airport", Toast.LENGTH_LONG).show();
         }
+
         if(getCoordinates(arguments.getString(ARRIVAL))!=null){
             LatLng arrival = new LatLng(getCoordinates(arguments.getString(ARRIVAL))[0], getCoordinates(arguments.getString(ARRIVAL))[1]);
             googleMap.addMarker(new MarkerOptions().position(arrival)
@@ -123,6 +127,7 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
             Toast.makeText(getContext(), "Can't display arrival airport", Toast.LENGTH_LONG).show();
         }
 
+        //Live data on aircraft path
         mViewModel.mapFlightLiveData.observe(getViewLifecycleOwner(), new Observer<FlightTrack>()
         {
             @Override
@@ -138,18 +143,21 @@ public class MapFlightFragment extends Fragment implements OnMapReadyCallback{
                 mPath.setEndCap(new RoundCap());
                 mPath.setWidth(12);
                 mPath.setColor(0xffF9A825);
-                mPath.setJointType(JointType.ROUND);
+                mPath.setJointType(JointType.ROUND); //Draw orange polyline
 
                 displayDetails = rootView.findViewById(R.id.displayDetails);
                 displayDetails.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.i("AAAA", "clicked");
-                        MapLiveTrackActivity.startActivity(getActivity(), flightTrack.getIcao24());
+                        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                        if(Utils.Companion.isNetworkAvailable(activity)) {
+                            MapLiveTrackActivity.startActivity(getActivity(), flightTrack.getIcao24());
+                        }else{
+                            NoConnexionActivity.startActivity(activity);
+                        }
 
                     }
                 });
-
             }
         });
 
