@@ -49,7 +49,7 @@ public class MapFlightViewModel extends AndroidViewModel {
                     @Override
                     public void onResponse(String response)
                     {
-                        Log.i(TAG, "String response is " + response);
+                        //Log.i(TAG, "String response is " + response);
                         FlightTrack flightTrack;
                         List<FlightPath> flightPathList = new ArrayList<>();
                         JsonObject flightsJsonArray = getPathRequestJson(response);
@@ -71,6 +71,7 @@ public class MapFlightViewModel extends AndroidViewModel {
                                                     flightsJsonArray.get("endTime").getAsLong(),
                                                     flightPathList);
                         mapFlightLiveData.setValue(flightTrack);
+                        Log.i(TAG, "Done request");
 
                     }
 
